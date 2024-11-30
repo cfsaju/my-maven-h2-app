@@ -6,7 +6,7 @@ pipeline {
     }
 
     params {
-	String(name:'branch_name', defaultValue:'main', description: 'Enter the branch name')	
+	string(name:'branch_name', defaultValue:'main', description: 'Enter the branch name')	
 
     }
     stages {
