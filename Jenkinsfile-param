@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'mvn39'
+    }
+
+    params {
+	String(name:'branch_name', defaultValue:'main', description: 'Enter the branch name')	
+
+    }
+    stages {
+
+	stage('git pull'){
+		
+              git branch: params.branch_name, credentialsId: '24d0d61e-c675-4ec0-a366-bbd31d5370a8', url: 'https://github.com/cfsaju/my-maven-h2-app.git'
+
+           }
+
+        stage('Compile') {
+            steps {
+               sh "mvn compile"
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh "mvn test"
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "mvn package"
+            }
+        }
+    }
+}
