@@ -12,9 +12,11 @@ pipeline {
     stages {
 
 	stage('git pull'){
+
+            steps {  
 		
               git branch: params.branch_name, credentialsId: '24d0d61e-c675-4ec0-a366-bbd31d5370a8', url: 'https://github.com/cfsaju/my-maven-h2-app.git'
-
+		}
            }
 
         stage('Compile') {
