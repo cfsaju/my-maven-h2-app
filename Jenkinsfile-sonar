@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'mvn39'
+    }
+
+    parameters {
+	string(name:'branch_name', defaultValue:'main', description: 'Enter the branch name')	
+
+    }
+   
+    environment {
+         SCANNER_HOME= tool 'sonarqube-scanner'
+
+    }    
+
+    stages {
+
+	stage('git pull'){
+
+            steps {  
+		
+              git branch: params.branch_name, credentialsId: '24d0d61e-c675-4ec0-a366-bbd31d5370a8', url: 'https://github.com/cfsaju/my-maven-h2-app.git'
+		}
+           }
+
+        stage('Compile') {
+            steps {
+               sh "mvn compile"
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh "mvn test"
+            }
+        }
+
+       stage('Sonar Qube Analysis') {
+            steps {
+                  withSonarQubeEnv('sonarqube-scanner'){
+                  sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectKey=sonar-job -Dsonar.projectName=sonar-job \
+                         -Dsonar.java.binaries=target'''
+
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "mvn package"
+            }
+        }
+    }
+}
